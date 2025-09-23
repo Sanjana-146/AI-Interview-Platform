@@ -1,6 +1,6 @@
 import express from "express";
-import userAuth from "../middleware/userAuth.js";
-import { submitInterviewForm } from "../controller/interviewController.js";
+import userAuth from "../middlewares/userAuth.js";
+import { submitInterviewForm , getUserInterviews } from "../controllers/interviewController.js";
 import multer from "multer";
 
 const interviewRouter = express.Router();
@@ -21,5 +21,7 @@ const upload = multer({ storage: storage });
 // 2. Apply the 'upload.single('resume')' middleware first to parse the form data.
 // The 'userAuth' middleware runs after the body has been populated.
 interviewRouter.post("/submitForm", upload.single('resume'), userAuth, submitInterviewForm);
+
+interviewRouter.get("/my-interviews", userAuth, getUserInterviews);
 
 export default interviewRouter;

@@ -5,7 +5,7 @@ const InterviewFormSchema = new mongoose.Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "users", // Should match your UserModel collection name
+      ref: "user", // Should match your UserModel collection name
       required: true,
     },
     company: {
@@ -42,7 +42,12 @@ const InterviewFormSchema = new mongoose.Schema(
     resumePath: {
       type: String,
       required: true,
-    }
+    },
+    status: {
+    type: String,
+    enum: ['pending', 'completed'], // Use enum for defined states
+    default: 'pending'
+  },
   },
   { timestamps: true }
 );

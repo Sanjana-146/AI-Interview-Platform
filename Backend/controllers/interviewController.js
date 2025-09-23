@@ -1,7 +1,7 @@
 import InterviewModel from "../models/interviewFormModel.js";
-import {generateQuestions} from "../utils/geminiai.js";
+import { generateQuestions } from "../utils/geminiai.js";
 
-export const submitInterviewForm = async ( req , res) =>{
+export const submitInterviewForm = async (req, res) => {
   // Multer populates req.body with text fields and req.file with the file
   const {
     company,
@@ -12,15 +12,15 @@ export const submitInterviewForm = async ( req , res) =>{
     techStack,
   } = req.body;
   const resume = req.file;
-  
+
   // The userId is assumed to be handled by your userAuth middleware
-  const userId = req.userId;
+  const userId = req.user._id;
 
   // Check for missing fields, including the resume file
   if (
     !company ||
     !jobRole ||
-    jobExperience === undefined || 
+    jobExperience === undefined ||
     !duration ||
     !difficulty ||
     !techStack ||
@@ -66,4 +66,23 @@ export const submitInterviewForm = async ( req , res) =>{
   }
 };
 
-export default submitInterviewForm;
+// ✅ New controller function to get user's interviews
+export const getUserInterviews = async (req, res) => {
+  try {
+    // Get the user's ID from the auth middleware
+    const userId = req.user._id;
+
+    // Find all interviews that match the userId and sort them by most recent
+    const interviews = await InterviewModel.find({
+      userId: userId,
+      status: 'completed' // <-- Add this filter=
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, interviews });
+
+  } catch (error) {
+    console.error("Error fetching user interviews:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch interviews." });
+  }
+};
+

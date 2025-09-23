@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
+import { Link } from 'react-router-dom';
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
 function Signin({ onToggle }) {
-  const {backendUrl , setIsLoggedin} = useContext(AppContext)
+  const { backendUrl, setIsLoggedIn, setUser } = useContext(AppContext)
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,35 +27,36 @@ function Signin({ onToggle }) {
   };
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validate()) return;
+    if (!validate()) return;
 
-  try {
-    const response = await fetch(backendUrl + '/api/auth/signin', {
-      method: "POST",
-      credentials: "include", // To allow cookie to be stored
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch(backendUrl + '/api/auth/signin', {
+        method: "POST",
+        credentials: "include", // To allow cookie to be stored
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      alert("Login successful!");
-      setIsLoggedin(true);
-    navigate("/");
-      // redirect or store token/session if needed
-    } else {
-      alert(data.message || "Login failed");
+      if (data.success) {
+        alert("Login successful!");
+        setIsLoggedIn(true);
+        setUser(data.user);
+        navigate("/");
+        // redirect or store token/session if needed
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again later.");
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    alert("Something went wrong. Please try again later.");
-  }
-};
+  };
 
 
   return (
@@ -64,10 +67,10 @@ function Signin({ onToggle }) {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex space-x-2 bg-[#2a2a2a] rounded-full p-1">
-            <button  onClick={onToggle} className="px-4 py-1 text-sm font-semibold text-white">Sign up</button>
+            <button onClick={onToggle} className="px-4 py-1 text-sm font-semibold text-white">Sign up</button>
             <button className="px-4 py-1 text-sm font-semibold bg-white text-black rounded-full">Sign in</button>
           </div>
-          
+
         </div>
 
         {/* Title */}
@@ -101,10 +104,13 @@ function Signin({ onToggle }) {
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-sm text-gray-400 hover:text-white"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute top-1/2 right-3 -translate-y-1/2 p-1 rounded-md hover:opacity-90 focus:outline-none focus:ring"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              title={showPassword ? "Hide password" : "Show password"}
             >
-              {showPassword ? "Hide" : "Show"}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}{" "}
+              {/* ✅ icon only */}
             </button>
             {errors.password && (
               <p className="text-red-400 text-sm mt-1">{errors.password}</p>
@@ -120,29 +126,13 @@ function Signin({ onToggle }) {
           </button>
         </form>
 
-        {/* OR Divider */}
-        <div className="flex items-center my-4">
-          <div className="flex-grow h-px bg-gray-600"></div>
-          <span className="px-4 text-gray-400 text-sm">OR SIGN IN WITH</span>
-          <div className="flex-grow h-px bg-gray-600"></div>
-        </div>
 
-        {/* Social Buttons */}
-        <div className="space-x-4 flex justify-center">
-          <button className="w-[200px] bg-[#2a2a2a] p-3 rounded-md flex justify-center items-center hover:bg-[#3a3a3a] transition">
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="h-5"
-            />
-          </button>
-        </div>
 
         <p className="text-xs text-gray-500 mt-6 text-center">
           By signing in, you agree to our{" "}
-          <a href="#" className="underline">
+          <Link to="/terms" className="underline">
             Terms & Service
-          </a>
+          </Link>
         </p>
       </div>
     </div>

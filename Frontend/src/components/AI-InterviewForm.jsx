@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import React, { useState, useContext } from "react";
 import { CloudUpload } from "lucide-react";
+import TravellingLine from '../components/custom/TravellingLine';
 
 export default function AIInterviewForm() {
   const navigate = useNavigate();
@@ -82,8 +83,8 @@ export default function AIInterviewForm() {
 
       const result = await response.json();
       console.log("Success:", result);
-      
-      navigate("/rules", { state: { questions: result.questions, duration: formData.duration } });
+
+      navigate("/rules", { state: { questions: result.questions, duration: formData.duration , sessionId: result.sessionId  } });
     } catch (error) {
       console.error("Error submitting form:", error);
       alert(`An error occurred: ${error.message}`);
@@ -93,13 +94,16 @@ export default function AIInterviewForm() {
   };
 
   return (
+  
     <div className="min-h-screen bg-gray-900 text-white p-6 flex justify-center items-center">
+      <TravellingLine />
       <form
         onSubmit={handleSubmit}
         className="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-3xl space-y-6"
       >
-        <h2 className="text-3xl font-bold text-center">
-          AI Interview Experience Form
+        <h2 className="text-3xl font-bold text-center text-white">     
+          {/* isme lien change ha thoda  <span className="text-blue-500">Screening</span> */}
+          AI Interview  <span className="text-blue-500">Screening</span> Form   
         </h2>
         {/* All the form fields for company, role, etc. go here. They are correct as they were. */}
         <div>
@@ -112,7 +116,7 @@ export default function AIInterviewForm() {
             value={formData.company}
             onChange={handleChange}
             placeholder="Describe the company..."
-            className="mt-1 bg-gray-700 border-none text-white focus:ring-2 focus:ring-purple-500 w-full rounded-lg p-2 resize-none overflow-y-auto"
+            className="mt-1 bg-gray-700 border-none text-white focus:ring-2 focus:ring-blue-500 w-full rounded-lg p-2 resize-none overflow-y-auto"
           />
           {errors.company && (
             <p className="text-red-400 text-sm mt-1">{errors.company}</p>
@@ -145,7 +149,7 @@ export default function AIInterviewForm() {
               value={formData.experience}
               onChange={handleChange}
               placeholder="e.g., 2"
-              className="mt-1 bg-gray-700 border-none text-white focus:ring-2 focus:ring-purple-500 w-full rounded-lg p-2"
+              className="mt-1 bg-gray-700 border-none text-white focus:ring-2 focus:ring-blue-500 w-full rounded-lg p-2"
             />
             {errors.experience && (
               <p className="text-red-400 text-sm mt-1">{errors.experience}</p>
@@ -159,7 +163,7 @@ export default function AIInterviewForm() {
               id="difficulty"
               value={formData.difficulty}
               onChange={handleChange}
-              className="mt-1 bg-gray-700 border-none text-white focus:ring-2 focus:ring-purple-500 w-full rounded-lg p-2"
+              className="mt-1 bg-gray-700 border-none text-white focus:ring-2 focus:ring-blue-500 w-full rounded-lg p-2"
             >
               <option value="">Select Difficulty</option>
               <option value="Easy">Easy</option>
@@ -212,10 +216,10 @@ export default function AIInterviewForm() {
           className={`mt-6 p-6 border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-colors ${
             resume
               ? "border-green-400 bg-green-900/20"
-              : "border-gray-600 hover:border-purple-500"
+              : "border-gray-600 hover:border-blue-500"
           }`}
         >
-          <CloudUpload className="h-12 w-12 text-purple-400" />
+          <CloudUpload className="h-12 w-12 text-blue-400" />
           <p className="mt-2 text-sm">
             Drag & drop your resume/CV here or click to upload
           </p>
@@ -227,7 +231,7 @@ export default function AIInterviewForm() {
           />
           <label
             htmlFor="resume-upload"
-            className="cursor-pointer mt-2 text-purple-300 underline"
+            className="cursor-pointer mt-2 text-blue-300 underline"
           >
             {resume ? resume.name : "Browse Files"}
           </label>
@@ -239,7 +243,7 @@ export default function AIInterviewForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-[260px] flex justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg transition-colors"
+            className="w-[260px] flex justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
           >
             {loading ? "Submitting..." : "Submit"}
           </button>

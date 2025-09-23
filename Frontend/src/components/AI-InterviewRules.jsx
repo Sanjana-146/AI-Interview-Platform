@@ -12,8 +12,8 @@ export default function AIInterviewRules() {
   const location = useLocation();
 
   // Retrieve the questions and duration from the previous page's state
-  const { questions, duration } = location.state || { questions: [], duration: 30 };
-  
+  const { questions, duration, sessionId } = location.state || { questions: [], duration: 30, sessionId: null };
+
   const rules = [
     "Camera must be on throughout the interview.",
     "Microphone should remain active for clear responses.",
@@ -49,7 +49,7 @@ export default function AIInterviewRules() {
     if (inputValue.trim().toLowerCase() === "start") {
       setInterviewStarted(true);
       // Pass the questions and duration to the interview panel
-      navigate("/interview", { state: { questions, duration } });
+      navigate("/interview", { state: { questions, duration, sessionId } });
     } else {
       alert("Please type 'start' in the box to begin.");
     }
@@ -60,49 +60,56 @@ export default function AIInterviewRules() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 p-6 flex items-center justify-center">
-      <div className="flex flex-col lg:flex-row w-full max-w-6xl gap-6">
-        <div className="flex-1 bg-white rounded-2xl shadow-lg p-10 flex flex-col justify-between">
-          <div>
-            <h1 className="text-3xl font-extrabold text-gray-800 mb-4">Interview Rules</h1>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+    <div className="min-h-screen bg-gradient-to-r from-[#0b0f14] via-[#0b0f14] to-[#0a0e14] p-6 flex items-center justify-center">
+      <div className="flex flex-col lg:flex-row w-full max-w-6xl gap-6 rounded-2xl  bg-[#0e1420]/70 border-2  border-[#1774f5] shadow-2xl shadow-blue-700 backdrop-blur-md">
+
+        {/* Rules Section */}
+        <div className="flex-1  rounded-2xl   p-10 flex flex-col justify-between ">
+          <div> 
+            <h1 className="text-4xl font-extrabold text-white mb-4">Interview <span className="text-blue-500">Rules</span></h1>
+            <ul className="list-disc pl-6 space-y-2 text-gray-300">
               {rules.map((rule, index) => (
                 <li key={index} className="leading-relaxed">{rule}</li>
               ))}
             </ul>
           </div>
+
+          {/* Input Box + Start Button */}
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <input
               type="text"
               placeholder="Type 'start' to begin interview"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="flex-1 border text-gray-600 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 border border-gray-600 bg-[#1f2937] text-gray-200 placeholder-gray-400 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               onClick={startInterview}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition"
+             className="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium transition hover:bg-white hover:text-blue-600 hover:border hover:border-blue-600"
             >
               Start Interview
             </button>
           </div>
+
           {interviewStarted && (
-            <p className="mt-4 text-green-600 font-semibold animate-pulse">
+            <p className="mt-4 text-green-400 font-semibold animate-pulse">
               Redirecting to interview...
             </p>
           )}
         </div>
-        <div className="lg:w-1/3 bg-white rounded-2xl shadow-lg p-4 flex items-center justify-center">
+
+        {/* Camera Preview */}
+        <div className="lg:w-1/3   rounded-2xl  p-4 flex items-center justify-center  ">
           {cameraAllowed ? (
             <video
               ref={videoRef}
               autoPlay
               playsInline
               muted
-              className="w-full h-80 rounded-xl border border-gray-300 object-cover shadow-md"
+              className="w-full h-80 rounded-xl border border-gray-600 object-cover shadow-lg"
             />
           ) : (
-            <p className="text-gray-500 text-center px-4">
+            <p className="text-gray-400 text-center px-4">
               Please allow camera & microphone access to continue.
             </p>
           )}

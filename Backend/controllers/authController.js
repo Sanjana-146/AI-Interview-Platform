@@ -23,7 +23,8 @@ export const signup = async (req, res) => {
             lName, 
             email,
             phone,
-            password: hashedPassword
+            password: hashedPassword,
+            
         });
 
         await user.save();
@@ -47,8 +48,17 @@ export const signup = async (req, res) => {
             text: `Welcome to our Website. Your account has been created with eamil id: ${email}`
         }
         await transporter.sendMail(mailOptions);
+        return res.json({
+      success: true,
+      user: {
+        _id: user._id,
+        fName: user.fName,
+        lName: user.lName,
+        email: user.email,
+        phone: user.phone,
+      },
+    });
 
-        return res.json({ success: true });
     } catch (error) {
         return res.json({ success: false, message: error.message });
     }
@@ -85,7 +95,16 @@ export const signin = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
-        return res.json({ success: true });
+        return res.json({
+            success: true,
+            user: {
+                _id: user._id,
+                fName: user.fName,
+                lName: user.lName,
+                email: user.email,
+                phone: user.phone
+            }
+        });
     } catch (error) {
         return res.json({ success: false, message: error.message });
     }

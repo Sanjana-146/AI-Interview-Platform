@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useContext } from "react";
-import {useNavigate} from "react-router-dom";
-import { AppContext } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
+import { AppContext } from "../context/AppContext.jsx";
 
 function Signup({ onToggle }) {
-    const {backendUrl , setIsLoggedin} = useContext(AppContext)
+  const { backendUrl, setIsLoggedIn, setUser } = useContext(AppContext)
   const [formData, setFormData] = useState({
     fName: "",
     lName: "",
@@ -31,9 +32,13 @@ function Signup({ onToggle }) {
 
     if (!formData.password.trim()) {
       newErrors.password = "Password is required";
-    } else if (!/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(formData.password)) {
+    } else if (
+      !/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(
+        formData.password
+      )
+    ) {
       newErrors.password =
-        "Password must be at least 8 characters, include a number and an uppercase letter";
+        "Password must be at least 8 characters, include a number, an uppercase letter, and a special character";
     }
 
     setErrors(newErrors);
@@ -45,40 +50,41 @@ function Signup({ onToggle }) {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validate()) return;
+    e.preventDefault();
+    if (!validate()) return;
 
-  try {
-    const response = await fetch(backendUrl + '/api/auth/signup', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include", // ⬅️ This is important to receive the httpOnly cookie
-      body: JSON.stringify(formData)
-    });
+    try {
+      const response = await fetch(backendUrl + '/api/auth/signup', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include", // ⬅️ This is important to receive the httpOnly cookie
+        body: JSON.stringify(formData)
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!data.success) {
-      alert(data.message || "Signup failed.");
-      return;
+      if (!data.success) {
+        alert(data.message || "Signup failed.");
+        return;
+      }
+
+      alert("Signup successful!");
+      setIsLoggedIn(true);
+      setUser(data.user);
+      navigate("/");
+
+    } catch (err) {
+      console.error("Signup error:", err);
+      alert("Something went wrong. Please try again.");
     }
-
-    alert("Signup successful!");
-    setIsLoggedin(true);
-    navigate("/");
-
-  } catch (err) {
-    console.error("Signup error:", err);
-    alert("Something went wrong. Please try again.");
-  }
-};
+  };
   const navigate = useNavigate();
   const handleToggle = (target) => {
-  onToggle(); // this handles UI toggle logic
-  navigate(target); // this updates the URL
-};
+    onToggle(); // this handles UI toggle logic
+    navigate(target); // this updates the URL
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white relative">
@@ -101,7 +107,7 @@ function Signup({ onToggle }) {
               Sign in
             </button>
           </div>
-          
+
         </div>
 
         <h2 className="text-xl font-semibold mb-4">Create an account</h2>
@@ -112,12 +118,12 @@ function Signup({ onToggle }) {
                 type="text"
                 name="fName"
                 placeholder="First name"
-                value={formData.firstName}
+                value={formData.fName}
                 onChange={handleChange}
                 className="w-full bg-[#2a2a2a] p-3 rounded-md outline-none placeholder:text-gray-400"
               />
-              {errors.firstName && (
-                <p className="text-red-400 text-sm mt-1">{errors.firstName}</p>
+              {errors.fName && (
+                <p className="text-red-400 text-sm mt-1">{errors.fName}</p>
               )}
             </div>
 
@@ -126,12 +132,12 @@ function Signup({ onToggle }) {
                 type="text"
                 name="lName"
                 placeholder="Last name"
-                value={formData.lastName}
+                value={formData.lName}
                 onChange={handleChange}
                 className="w-full bg-[#2a2a2a] p-3 rounded-md outline-none placeholder:text-gray-400"
               />
-              {errors.lastName && (
-                <p className="text-red-400 text-sm mt-1">{errors.lastName}</p>
+              {errors.lName && (
+                <p className="text-red-400 text-sm mt-1">{errors.lName}</p>
               )}
             </div>
           </div>
@@ -213,9 +219,9 @@ function Signup({ onToggle }) {
 
         <p className="text-xs text-gray-500 mt-6 text-center">
           By creating an account, you agree to our{" "}
-          <a href="#" className="underline">
+          <Link to="/terms" className="underline">
             Terms & Service
-          </a>
+          </Link>
         </p>
       </div>
     </div>
