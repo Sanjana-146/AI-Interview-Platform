@@ -1,3 +1,4 @@
+import { text } from "express";
 import InterviewModel from "../models/interviewFormModel.js";
 import { generateQuestions } from "../utils/geminiai.js";
 
@@ -53,13 +54,27 @@ export const submitInterviewForm = async (req, res) => {
       techStack
     });
 
+    const introQues = {
+      id: 1,
+      text: "Tell me about yourself.",
+      expectedSeconds: 90
+    };
+
+    const finalQuestions = [introQues];
+    if(questions && Array.isArray(questions)){
+      questions.forEach((q,index)=>{
+        finalQuestions.push({
+          ...q,
+          id: index+2
+        });
+      });
+    }
     res.status(201).json({
       success: true,
       message: "Interview form submitted successfully",
-      questions,
+      questions: finalQuestions,
       sessionId: interviewData._id,
     });
-
   } catch (error) {
     console.error("Error in submitInterviewForm:", error);
     res.status(500).json({ success: false, message: error.message });

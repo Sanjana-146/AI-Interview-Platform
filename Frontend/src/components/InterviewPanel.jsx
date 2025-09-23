@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState , useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 // Import LoaderCircle for a better user experience
-import { PhoneOff, Mic, MicOff, Volume2, LoaderCircle , ShieldAlert } from "lucide-react";
+import { PhoneOff, Mic, MicOff, Volume2, LoaderCircle, ShieldAlert } from "lucide-react";
 import Interviewpanel from "../assets/Interviewpanel.mp4";
 
 export default function InterviewPanel() {
@@ -26,9 +26,9 @@ export default function InterviewPanel() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Proctoring State
-  const [warnings , setWarnings] = useState(0);
-  const [proctoringModelIsLoaded, setproctoringModelIsLoaded] = useState(false);
-  const [userStream, setUserStream] = useState(null); 
+  const [warnings, setWarnings] = useState(0);
+  // const [proctoringModelIsLoaded, setproctoringModelIsLoaded] = useState(false);
+  const [userStream, setUserStream] = useState(null);
   const MAX_WARNINGS = 3;
 
   const recognitionRef = useRef(null);
@@ -37,13 +37,13 @@ export default function InterviewPanel() {
   const fullTranscriptRef = useRef("");
   const isManuallyStopped = useRef(false);
 
-   // Proctoring Ref
+  // Proctoring Ref
   const detectionIntervalRef = useRef(null);
   const warningInProgress = useRef(false);
   const lastWarningReasonRef = useRef("");
 
   // --- PROCTORING LOGIC ---
-useEffect(() => {
+  useEffect(() => {
     // Don't run on initial render
     if (warnings === 0) {
       return;
@@ -76,7 +76,7 @@ useEffect(() => {
   }, []);
 
 
-   // Effect for detecting tab switching
+  // Effect for detecting tab switching
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -87,94 +87,94 @@ useEffect(() => {
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [handleWarning]);
 
-   // Effect for loading ML models and running video analysis
-  useEffect(() => {
-    // Helper function to dynamically load scripts
-    const loadScript = (src) => {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = () => resolve(script);
-            script.onerror = () => reject(new Error(`Script load error for ${src}`));
-            document.head.appendChild(script);
-        });
-    };
-    const loadAndRunProctoring = async () => {
-      try {
-         // 1. Load the main TensorFlow.js library FIRST and wait for it to complete.
-        await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js");
-        
-        // 2. Once the core library is loaded, load the dependent models concurrently.
-        await Promise.all([
-            loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"),
-            loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js")
-        ]);
-        
-        // Access models from the window object
-        const { tf, cocoSsd, blazeface } = window;
+  // Effect for loading ML models and running video analysis
+  // useEffect(() => {
+  //   // Helper function to dynamically load scripts
+  //   const loadScript = (src) => {
+  //       return new Promise((resolve, reject) => {
+  //           const script = document.createElement('script');
+  //           script.src = src;
+  //           script.onload = () => resolve(script);
+  //           script.onerror = () => reject(new Error(`Script load error for ${src}`));
+  //           document.head.appendChild(script);
+  //       });
+  //   };
+  //   const loadAndRunProctoring = async () => {
+  //     try {
+  //        // 1. Load the main TensorFlow.js library FIRST and wait for it to complete.
+  //       await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js");
 
-        // Set backend to webgl for better performance
-        await tf.setBackend('webgl');
-        await tf.ready();
-        
-        // Load both models concurrently
-        const [objectModel, faceModel] = await Promise.all([
-          cocoSsd.load(),
-          blazeface.load(),
-        ]);
-        setproctoringModelIsLoaded(true);
-        console.log("Proctoring models loaded successfully.");
+  //       // 2. Once the core library is loaded, load the dependent models concurrently.
+  //       await Promise.all([
+  //           loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"),
+  //           loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js")
+  //       ]);
 
-        // Run detection on an interval
-        detectionIntervalRef.current = setInterval(() => {
-          detectFrame(objectModel, faceModel);
-        }, 4000); // Check every 4 seconds
+  //       // Access models from the window object
+  //       const { tf, cocoSsd, blazeface } = window;
 
-      } catch (error) {
-          console.error("Error loading proctoring models:", error);
-          alert("Could not load proctoring features. Please ensure you are on a modern browser and have WebGL enabled.");
-      }
-    };
+  //       // Set backend to webgl for better performance
+  //       await tf.setBackend('webgl');
+  //       await tf.ready();
 
-    const detectFrame = async (objectModel, faceModel) => {
-      const video = userVideoRef.current;
-      if (!video || video.readyState < 3 || document.hidden) {
-        // Wait for the video to have enough data to play
-        return;
-      }
+  //       // Load both models concurrently
+  //       const [objectModel, faceModel] = await Promise.all([
+  //         cocoSsd.load(),
+  //         blazeface.load(),
+  //       ]);
+  //       setproctoringModelIsLoaded(true);
+  //       console.log("Proctoring models loaded successfully.");
 
-      try {
-            // 1. Detect faces
-            const faces = await faceModel.estimateFaces(video, false);
-            if (faces && faces.length > 1) {
-                handleWarning("Multiple people detected in the video feed.");
-                return; // Stop further checks if a violation is found
-            }
+  //       // Run detection on an interval
+  //       detectionIntervalRef.current = setInterval(() => {
+  //         detectFrame(objectModel, faceModel);
+  //       }, 4000); // Check every 4 seconds
 
-            // 2. Detect objects
-            const predictions = await objectModel.detect(video);
-            if (predictions) {
-                const phone = predictions.find(p => p.class === 'cell phone' && p.score > 0.65);
-                if (phone) {
-                    handleWarning("A cell phone was detected. Please put it away.");
-                }
-            }
-        } catch (error) {
-            console.error("Error during proctoring detection:", error);
-        }
-    };
+  //     } catch (error) {
+  //         console.error("Error loading proctoring models:", error);
+  //         alert("Could not load proctoring features. Please ensure you are on a modern browser and have WebGL enabled.");
+  //     }
+  //   };
 
-    if(userStream) {
-        loadAndRunProctoring();
-    }
+  //   const detectFrame = async (objectModel, faceModel) => {
+  //     const video = userVideoRef.current;
+  //     if (!video || video.readyState < 3 || document.hidden) {
+  //       // Wait for the video to have enough data to play
+  //       return;
+  //     }
 
-    // Cleanup interval on component unmount
-    return () => {
-      if (detectionIntervalRef.current) {
-        clearInterval(detectionIntervalRef.current);
-      }
-    };
-  }, [handleWarning, userStream]);
+  //     try {
+  //           // 1. Detect faces
+  //           const faces = await faceModel.estimateFaces(video, false);
+  //           if (faces && faces.length > 1) {
+  //               handleWarning("Multiple people detected in the video feed.");
+  //               return; // Stop further checks if a violation is found
+  //           }
+
+  //           // 2. Detect objects
+  //           const predictions = await objectModel.detect(video);
+  //           if (predictions) {
+  //               const phone = predictions.find(p => p.class === 'cell phone' && p.score > 0.65);
+  //               if (phone) {
+  //                   handleWarning("A cell phone was detected. Please put it away.");
+  //               }
+  //           }
+  //       } catch (error) {
+  //           console.error("Error during proctoring detection:", error);
+  //       }
+  //   };
+
+  //   if(userStream) {
+  //       loadAndRunProctoring();
+  //   }
+
+  //   // Cleanup interval on component unmount
+  //   return () => {
+  //     if (detectionIntervalRef.current) {
+  //       clearInterval(detectionIntervalRef.current);
+  //     }
+  //   };
+  // }, [handleWarning, userStream]);
 
   // --- END OF PROCTORING LOGIC ---
 
@@ -244,9 +244,9 @@ useEffect(() => {
     }
   };
 
-  
 
- // Effect to get and manage the user's camera and microphone stream
+
+  // Effect to get and manage the user's camera and microphone stream
   useEffect(() => {
     // Get the user's media stream once
     navigator.mediaDevices.getUserMedia({ audio: true, video: true })
@@ -257,11 +257,11 @@ useEffect(() => {
         console.error("Error accessing media devices.", err);
         alert("Please allow camera and microphone access to continue.");
       });
-      // Cleanup stream on component unmount
+    // Cleanup stream on component unmount
     return () => {
-        if(userStream) {
-            userStream.getTracks().forEach(track => track.stop());
-        }
+      if (userStream) {
+        userStream.getTracks().forEach(track => track.stop());
+      }
     }
   }, []);
 
@@ -269,15 +269,15 @@ useEffect(() => {
     if (userStream && userVideoRef.current) {
       userVideoRef.current.srcObject = userStream;
     }
-  }, [userStream, proctoringModelIsLoaded]);
+  }, [userStream]);
 
   useEffect(() => {
-    if (proctoringModelIsLoaded && questions && questions.length > 0 && messages.length === 0) {
+    if (questions && questions.length > 0 && messages.length === 0) {
       const firstQuestion = questions[0];
       setMessages([{ sender: "ai", text: firstQuestion.text }]);
       speakQuestion(firstQuestion.text);
     }
-  }, [questions, proctoringModelIsLoaded]);
+  }, [questions]);
 
   const speakQuestion = (text) => {
     if ("speechSynthesis" in window) {
@@ -298,7 +298,7 @@ useEffect(() => {
     if (userStream && userVideoRef.current) {
       userVideoRef.current.srcObject = userStream;
     }
-  }, [userStream, proctoringModelIsLoaded]); 
+  }, [userStream]);
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
@@ -361,7 +361,7 @@ useEffect(() => {
       recognitionRef.current.interimResults = true;  // Show interim results
       recognitionRef.current.maxAlternatives = 1;
 
-    
+
 
       recognitionRef.current.onresult = (event) => {
         let interimTranscript = "";
@@ -374,8 +374,8 @@ useEffect(() => {
           }
         }
 
-         console.log("🎤 Interim:", interimTranscript);
-  console.log("✅ Final:", finalTranscript);
+        console.log("🎤 Interim:", interimTranscript);
+        console.log("✅ Final:", finalTranscript);
 
         if (finalTranscript.trim().length > 0) {
           fullTranscriptRef.current += finalTranscript + " ";
@@ -396,15 +396,15 @@ useEffect(() => {
         }
         isManuallyStopped.current = false; // Reset flag for the next session
       };
-  
+
       // ✨ FIXED: The onerror handler should ONLY log the error.
       // Do not try to restart the recognition here, as it will conflict with onend.
-     recognitionRef.current.onerror = (event) => {
-  console.error("Speech recognition error:", event.error);
-  if (event.error === "no-speech") {
-    console.warn("No speech detected. Please try speaking louder or closer to the mic.");
-  }
-};
+      recognitionRef.current.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        if (event.error === "no-speech") {
+          console.warn("No speech detected. Please try speaking louder or closer to the mic.");
+        }
+      };
 
     }
 
@@ -420,19 +420,19 @@ useEffect(() => {
     }
   };
 
-  if (!proctoringModelIsLoaded) {
-    return (
-        <div className="fixed inset-0 bg-gray-100 flex flex-col items-center justify-center z-50">
-            <LoaderCircle size={48} className="animate-spin text-blue-600" />
-            <p className="text-gray-700 text-lg mt-4">Loading proctoring models, please wait...</p>
-            <p className="text-gray-500 text-sm mt-2">This may take a moment.</p>
-        </div>
-    );
-  }
+  // if (!proctoringModelIsLoaded) {
+  //   return (
+  //       <div className="fixed inset-0 bg-gray-100 flex flex-col items-center justify-center z-50">
+  //           <LoaderCircle size={48} className="animate-spin text-blue-600" />
+  //           <p className="text-gray-700 text-lg mt-4">Loading proctoring models, please wait...</p>
+  //           <p className="text-gray-500 text-sm mt-2">This may take a moment.</p>
+  //       </div>
+  //   );
+  // }
 
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 flex flex-col md:flex-row gap-4">
+    <div className="h-[100vh]  bg-gradient-to-r from-[#0b0f14] via-[#0b0f14] to-[#0a0e14] p-4 flex flex-col md:flex-row gap-4">
       {/* Loading Overlay when analyzing */}
       {isAnalyzing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
@@ -444,19 +444,35 @@ useEffect(() => {
       <div className="flex-1 bg-white rounded-xl shadow-lg flex flex-col">
         <div className="flex-1 p-4 overflow-y-auto space-y-4">
           {messages.map((msg, index) => (
+            // <div
+            //   key={index}
+            //   className={`max-w-xs p-3 rounded-lg ${
+            //     msg.sender === "me"
+            //       ? "ml-auto bg-blue-500 text-white border-2 border-gray-400 shadow-2xl"
+            //       : "bg-gray-200 text-gray-900"
+            //   }`}
+            // >
+            //   <p className="text-xs font-semibold mb-1">
+            //     {msg.sender === "me" ? "You" : "AI Agent"}
+            //   </p>
+            //   {msg.text.split("\n").map((line, i) => (
+            //     <p key={i}>{line}</p>
+            //   ))}
+            // </div>
             <div
               key={index}
-              className={`max-w-xs p-3 rounded-lg ${
-                msg.sender === "me"
+              className={`max-w-xs p-3 rounded-lg break-words ${msg.sender === "me"
                   ? "ml-auto bg-blue-500 text-white border-2 border-gray-400 shadow-2xl"
                   : "bg-gray-200 text-gray-900"
-              }`}
+                }`}
             >
-              <p className="text-xs font-semibold mb-1">
+              <p className="text-xs font-semibold mt-5">
                 {msg.sender === "me" ? "You" : "AI Agent"}
               </p>
               {msg.text.split("\n").map((line, i) => (
-                <p key={i}>{line}</p>
+                <p key={i} className="break-words">
+                  {line}
+                </p>
               ))}
             </div>
           ))}
@@ -472,9 +488,8 @@ useEffect(() => {
           />
           <button
             onClick={startListening}
-            className={`px-3 py-2 rounded-full transition-colors ${
-              listening ? "bg-red-500 text-white" : "bg-gray-300"
-            }`}
+            className={`px-3 py-2 rounded-full transition-colors ${listening ? "bg-red-500 text-white" : "bg-gray-300"
+              }`}
             title="Click to speak"
             disabled={isSpeaking}
           >
@@ -489,16 +504,16 @@ useEffect(() => {
           </button>
         </div>
       </div>
-      <div className="w-full md:w-1/3 bg-white rounded-xl shadow-lg p-4 flex flex-col items-center gap-4">
+      <div className="w-full md:w-1/4 bg-white rounded-xl shadow-lg p-4 flex flex-col items-center gap-4">
         <div className="w-full flex justify-between items-center">
-            <div className="text-lg font-bold text-gray-900">
-                Time Left:{" "}
-                <span className="ml-2 text-blue-600">{m}:{s}</span>
-            </div>
-            <div className="flex items-center gap-2 text-yellow-600" title={`${warnings} out of ${MAX_WARNINGS} warnings used`}>
-                <ShieldAlert size={20} />
-                <span className="font-semibold">{warnings}/{MAX_WARNINGS}</span>
-            </div>
+          <div className="text-lg font-bold text-gray-900">
+            Time Left:{" "}
+            <span className="ml-2 text-blue-600">{m}:{s}</span>
+          </div>
+          <div className="flex items-center gap-2 text-yellow-600" title={`${warnings} out of ${MAX_WARNINGS} warnings used`}>
+            <ShieldAlert size={20} />
+            <span className="font-semibold">{warnings}/{MAX_WARNINGS}</span>
+          </div>
         </div>
         <div className="flex flex-col gap-6 w-full items-center mt-20">
           {isSpeaking && (
@@ -515,7 +530,7 @@ useEffect(() => {
             className="w-76 h-54 object-cover rounded-lg border"
           />
           <video
-            src={Interviewpanel }
+            src={Interviewpanel}
             autoPlay
             muted
             loop
@@ -525,14 +540,13 @@ useEffect(() => {
         </div>
         <button
           onClick={handleLeave}
-          className="flex items-center bg-[#C64C4C] hover:bg-[#b84343] text-white px-3 py-1 rounded-md mt-32"
+          className="flex items-center bg-[#960404] hover:bg-[#b84343] text-white px-3 py-1 rounded-md"
           disabled={isAnalyzing} // Disable button while loading
         >
-          <PhoneOff size={16} className="mr-1" />
-          {isAnalyzing ? "Analyzing..." : "Leave"}
+          {/* <PhoneOff size={15} className="mr-1" /> */}
+          {isAnalyzing ? "Analyzing..." : "Submit & Leave"}
         </button>
       </div>
     </div>
   );
 }
-
