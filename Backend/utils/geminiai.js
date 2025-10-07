@@ -1,9 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// ✨ FIXED: Initialize genAI and the model once at the top of the file.
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }); // Using gemini-1.5-flash for speed and cost-effectiveness
 
+const model = genAI.getGenerativeModel(
+    { model: "gemini-2.5-flash-lite" }
+);
 export async function generateQuestions(payload) {
   const { jobRole, techStack, difficulty, duration, jobExperience, company } = payload;
 

@@ -6,7 +6,8 @@ import TravellingLine from '../components/custom/TravellingLine';
 
 export default function AIInterviewForm() {
   const navigate = useNavigate();
-  const { backendUrl } = useContext(AppContext);
+  const {backendUrl, isLoggedIn} = useContext(AppContext);
+
 
   const [formData, setFormData] = useState({
     company: "",
@@ -55,6 +56,13 @@ export default function AIInterviewForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Add the protection check right at the beginning
+        if (!isLoggedIn) {
+            alert("Please sign up or log in to submit the form.");
+            navigate("/signup"); // Redirect them to the signup page
+            return; // Stop the function immediately
+        }
     if (!validateForm()) return;
 
     setLoading(true);

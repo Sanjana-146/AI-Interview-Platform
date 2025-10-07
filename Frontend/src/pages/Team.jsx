@@ -294,13 +294,20 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
+import shekharImage from '../assets/shekhar-ceo.jpg';
+import sakshiImage from '../assets/sakshi-FE.jpg';
+import siyaImage from '../assets/siya-Tl.jpg';
+import sanskarImage from '../assets/sanskar-test.jpg';
+import sonamImage from '../assets/sonam-legals.jpg';
+
+
 
 const team = [
-  { id: 1, name: "Shekhar Barkhade", role: "Frontend Developer", image: "https://randomuser.me/api/portraits/men/32.jpg", color: "bg-[#0D1B2A]" },
-  { id: 2, name: "Sanskar c", role: "UI/UX Designer", image: "https://randomuser.me/api/portraits/men/45.jpg", color: "bg-[#0D1B2A]" },
-  { id: 3, name: "Sanjana Patel", role: "Backend Developer", image: "https://randomuser.me/api/portraits/women/56.jpg", color: "bg-[#0D1B2A]" },
-  { id: 4, name: "Sakshi  ", role: "Database Engineer", image: "https://randomuser.me/api/portraits/men/78.jpg", color: "bg-[#0D1B2A]" },
-  { id: 5, name: "Ananya Sharma", role: "Project Manager", image: "https://randomuser.me/api/portraits/women/12.jpg", color: "bg-[#0D1B2A]" },
+  { id: 1, name: "Shekhar Barkhade", role: "Frontend Developer", image: shekharImage, color: "bg-[#0D1B2A]" },
+  { id: 2, name: "Sanskar c", role: "Test Engineer", image: sanskarImage, color: "bg-[#0D1B2A]" },
+  { id: 3, name: "Sanjana Patel", role: "Backend Developer", image: siyaImage, color: "bg-[#0D1B2A]" },
+  { id: 4, name: "Sakshi  ", role: "UI/UX Designer", image: sakshiImage, color: "bg-[#0D1B2A]" },
+  { id: 5, name: "Ananya Sharma", role: "Project Manager", image: sonamImage, color: "bg-[#0D1B2A]" },
 ];
 
 const Team3DCarousel = () => {

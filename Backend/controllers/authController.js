@@ -45,7 +45,7 @@ export const signup = async (req, res) => {
             from: process.env.SENDER_EMAIL,
             to: email,
             subject:'Welcome To AI-Interview Preparation Platform',
-            text: `Welcome to our Website. Your account has been created with eamil id: ${email}`
+            text: `Welcome to our Website. Your account has been created with email id: ${email}`
         }
         await transporter.sendMail(mailOptions);
         return res.json({
@@ -224,12 +224,12 @@ export const sendResetOtp = async(req,res)=>{
     }
 }
 
-// Reset PAssword
+// Reset Password
 export const resetPassword = async(req,res)=>{
     const {email , otp , newPassword} = req.body;
 
     if(!email || !otp || ! newPassword){
-        return res.json({success: false , message: "Email , OTP and newPAssword are required"});
+        return res.json({success: false , message: "Email , OTP and newPassword are required"});
     }
     try{
         const user = await UserModel.findOne({email});
@@ -253,3 +253,4 @@ export const resetPassword = async(req,res)=>{
 return res.json({success: false , message: error.message});
     }
 }
+

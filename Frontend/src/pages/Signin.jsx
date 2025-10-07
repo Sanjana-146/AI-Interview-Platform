@@ -6,7 +6,10 @@ import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
 function Signin({ onToggle }) {
-  const { backendUrl, setIsLoggedIn, setUser } = useContext(AppContext)
+  // const { backendUrl, setIsLoggedIn, setUser } = useContext(AppContext)
+  const backendUrl = ""; 
+  const setIsLoggedIn = (status) => console.log(`User logged in status set to: ${status}`);
+  const setUser = (user) => console.log("User context set to:", user);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -14,6 +17,12 @@ function Signin({ onToggle }) {
 
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  
+  // --- State for Forgot Password Modal ---
+  const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -58,8 +67,42 @@ function Signin({ onToggle }) {
     }
   };
 
+  // --- Function to handle the forgot password request ---
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    if (!forgotEmail) {
+      alert("Please enter your email address.");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      // This is the new endpoint you need to create on your backend
+      const response = await fetch(backendUrl + '/api/auth/send-reset-otp', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert("A password reset OTP has been sent to your email.");
+        setIsForgotModalOpen(false);
+        // Navigate to the reset page, passing the email along so the next page knows who is resetting
+        navigate("/reset-password", { state: { email: forgotEmail } });
+      } else {
+        alert(data.message || "Failed to send OTP. Please check the email address.");
+      }
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
+    <>
     <div className="min-h-screen flex items-center justify-center bg-black text-white relative">
       <div className="absolute inset-0 bg-gradient-to-br from-black via-black to-purple-900 opacity-30"></div>
 
@@ -117,6 +160,14 @@ function Signin({ onToggle }) {
             )}
           </div>
 
+          <div className="text-left mt-4">
+            <div className="text-right">
+              <button type="button" onClick={() => setIsForgotModalOpen(true)} className="text-sm text-gray-400 hover:underline">
+                Forgot Password?
+              </button>
+            </div>
+          </div>
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -136,6 +187,27 @@ function Signin({ onToggle }) {
         </p>
       </div>
     </div>
+    {/* --- Forgot Password Modal --- */}
+      {isForgotModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-[#1E1E1E] p-8 rounded-2xl shadow-xl w-[90%] max-w-md">
+            <h3 className="text-xl font-semibold mb-4">Reset Password</h3>
+            <p className="text-gray-400 mb-6">Enter your email address and we will send you an OTP to reset your password.</p>
+            <form onSubmit={handleForgotPassword}>
+              <input type="email" placeholder="Enter your registered email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} className="w-full bg-[#2a2a2a] p-3 rounded-md outline-none placeholder:text-gray-400 mb-4" />
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setIsForgotModalOpen(false)} className="w-full bg-[#2a2a2a] text-white font-semibold py-3 rounded-md hover:bg-gray-600 transition">
+                  Cancel
+                </button>
+                <button type="submit" disabled={loading} className="w-full bg-white text-black font-semibold py-3 rounded-md hover:bg-gray-200 transition disabled:opacity-50">
+                  {loading ? "Sending..." : "Send OTP"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      </>
   );
 }
 

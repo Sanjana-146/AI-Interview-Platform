@@ -14,6 +14,7 @@ import Footer from "../components/custom/Footer";
 import { ImMoveUp } from "react-icons/im";
 import UserStats from "../components/custom/Userstats";
 import TestModeBanner from "../components/TestModelBanner";
+import ContactUS from "../components/custom/ContactUs";
 
 
 const Home = () => {
@@ -146,7 +147,9 @@ const Home = () => {
       <div className="my-12">
   <UserStats />
 </div>
+
       <Team />
+      <ContactUS/>
       <FAQ />
 
      <div className="mt-20"> <Footer/></div>

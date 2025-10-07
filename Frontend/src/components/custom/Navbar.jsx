@@ -48,7 +48,7 @@ export default function Navbar() {
           onClick={() => navigate("/")}
           className="font-bold text-lg cursor-pointer"
         >
-          InterviewReady-AI
+          Interview Edge
         </h1>
 
         {/* Desktop Menu */}
@@ -57,13 +57,13 @@ export default function Navbar() {
             <Link to="/">Home</Link>
           </li>
           <li className="cursor-pointer">
-            <Link to="/ats">ATS Score</Link>
+            <Link to="/resume-checker">ATS Score</Link>
           </li>
           <li className="cursor-pointer">
-            <Link to="/practice">Practice Interviews</Link>
+            <Link to="/ai-interview-form">Practice Interviews</Link>
           </li>
           <li className="cursor-pointer">
-            <Link to="/support">Support</Link>
+            <Link to="/support">About Us</Link>
           </li>
         </ul>
 
@@ -109,8 +109,8 @@ export default function Navbar() {
 
         {/* Menu items */}
         <h4 onClick={() => navigate("/")} className="cursor-pointer">Home</h4>
-        <h4 onClick={() => navigate("/ats")} className="cursor-pointer">ATS Score</h4>
-        <h4 onClick={() => navigate("/practice")} className="cursor-pointer">Practice Interviews</h4>
+        <h4 onClick={() => navigate("/resume-checker")} className="cursor-pointer">Resume Checker</h4>
+        <h4 onClick={() => navigate("/ai-interview-form")} className="cursor-pointer">Practice Interviews</h4>
         <h4 onClick={() => navigate("/support")} className="cursor-pointer">Support</h4>
 
         {isLoggedIn && user ? (

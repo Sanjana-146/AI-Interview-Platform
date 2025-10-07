@@ -7,6 +7,7 @@ import authRouter from  './routes/authroutes.js';
 import userRouter from "./routes/userRoutes.js";
 import interviewRouter from "./routes/interviewroutes.js";
 import feedbackRoutes from './routes/feedbackroutes.js'; 
+import contactRouter from "./routes/contactUs.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -16,7 +17,10 @@ const allowedOrigins = ['http://localhost:5173']
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({origin: allowedOrigins , credentials: true}))
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
 
 // API Endpoints
 app.get('/' , (req , res)=> res.send("API is working"));
@@ -24,5 +28,6 @@ app.use('/api/auth' , authRouter)
 app.use('/api/user' , userRouter)
 app.use('/api/interview' , interviewRouter)
 app.use('/api/feedback' , feedbackRoutes)
+app.use('/api' , contactRouter)
 
 app.listen(port , ()=> console.log(`Server is running on PORT: ${port}`));

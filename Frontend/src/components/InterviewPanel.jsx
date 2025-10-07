@@ -29,13 +29,47 @@ export default function InterviewPanel() {
   const [warnings, setWarnings] = useState(0);
   // const [proctoringModelIsLoaded, setproctoringModelIsLoaded] = useState(false);
   const [userStream, setUserStream] = useState(null);
-  const MAX_WARNINGS = 3;
+  const MAX_WARNINGS = 1;
 
   const recognitionRef = useRef(null);
   const userVideoRef = useRef(null);
   const currentQuestionIndex = useRef(0);
   const fullTranscriptRef = useRef("");
   const isManuallyStopped = useRef(false);
+
+   // ---------------- FULLSCREEN + BACK BLOCK ----------------
+  useEffect(() => {
+    // Enter Fullscreen
+    const enterFullscreen = () => {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) elem.requestFullscreen();
+      else if (elem.mozRequestFullScreen) elem.mozRequestFullScreen();
+      else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+      else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+    };
+    enterFullscreen();
+
+    // Prevent back navigation
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null, null, window.location.href);
+      alert("⚠️ You can leave only by clicking Submit & Leave button.");
+    };
+
+    // Prevent Esc from exiting fullscreen
+    const preventEscExit = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        alert("⚠️ Exit is only allowed using Submit & Leave button.");
+      }
+    };
+    document.addEventListener("keydown", preventEscExit);
+
+    return () => {
+      window.onpopstate = null;
+      document.removeEventListener("keydown", preventEscExit);
+    };
+  }, []);
 
   // Proctoring Ref
   const detectionIntervalRef = useRef(null);
@@ -432,16 +466,18 @@ export default function InterviewPanel() {
 
 
   return (
-    <div className="h-[100vh]  bg-gradient-to-r from-[#0b0f14] via-[#0b0f14] to-[#0a0e14] p-4 flex flex-col md:flex-row gap-4">
+    <div className="h-[100vh]  bg-gradient-to-r from-[#0b0f14] via-[#0b0f14] to-[#0a0e14] p-4 flex flex-col md:flex-row gap-4  ">
       {/* Loading Overlay when analyzing */}
       {isAnalyzing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50 ">
           <LoaderCircle size={48} className="animate-spin text-white" />
-          <p className="text-white text-lg mt-4">Analyzing your performance, please wait...</p>
+          <p className="text-white text-lg mt-4">
+            Analyzing your performance, please wait...
+          </p>
         </div>
       )}
 
-      <div className="flex-1 bg-white rounded-xl shadow-lg flex flex-col">
+      <div className="flex-1 bg-[#111827]  flex flex-col shadow-lg shadow-blue-700/70 backdrop-blur-md rounded-xl">
         <div className="flex-1 p-4 overflow-y-auto space-y-4">
           {messages.map((msg, index) => (
             // <div
@@ -461,13 +497,14 @@ export default function InterviewPanel() {
             // </div>
             <div
               key={index}
-              className={`max-w-xs p-3 rounded-lg break-words ${msg.sender === "me"
-                  ? "ml-auto bg-blue-500 text-white border-2 border-gray-400 shadow-2xl"
-                  : "bg-gray-200 text-gray-900"
-                }`}
+              className={`max-w-xs p-3 rounded-lg break-words ${
+                msg.sender === "me"
+                  ? "ml-auto bg-blue-500 text-white  shadow-lg shadow-blue-700/70 backdrop-blur-md"
+                  : "bg-gray-200 text-gray-900 shadow-md shadow-white backdrop-blur-sm"
+              }`}
             >
               <p className="text-xs font-semibold mt-5">
-                {msg.sender === "me" ? "You" : "AI Agent"}
+                {msg.sender === "me" ? "User" : "AI Agent"}
               </p>
               {msg.text.split("\n").map((line, i) => (
                 <p key={i} className="break-words">
@@ -483,13 +520,14 @@ export default function InterviewPanel() {
             placeholder="Write your message or use mic..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 text-gray-600 border rounded-lg p-2 focus:outline-none"
+            className="flex-1 text-white border border-amber-50 rounded-lg p-2 focus:outline-none"
             disabled={isSpeaking}
           />
           <button
             onClick={startListening}
-            className={`px-3 py-2 rounded-full transition-colors ${listening ? "bg-red-500 text-white" : "bg-gray-300"
-              }`}
+            className={`px-3 py-2 rounded-full transition-colors ${
+              listening ? "bg-red-500 text-white" : "bg-gray-300"
+            }`}
             title="Click to speak"
             disabled={isSpeaking}
           >
@@ -504,24 +542,33 @@ export default function InterviewPanel() {
           </button>
         </div>
       </div>
-      <div className="w-full md:w-1/4 bg-white rounded-xl shadow-lg p-4 flex flex-col items-center gap-4">
+      <div className="w-full md:w-1/4 bg-gray-300 rounded-xl shadow-lg p-4 flex flex-col items-center gap-4">
         <div className="w-full flex justify-between items-center">
           <div className="text-lg font-bold text-gray-900">
-            Time Left:{" "}
-            <span className="ml-2 text-blue-600">{m}:{s}</span>
-          </div>
-          <div className="flex items-center gap-2 text-yellow-600" title={`${warnings} out of ${MAX_WARNINGS} warnings used`}>
+  Time Left:{" "}
+  <span className="ml-2 text-blue-600">
+    <span className="text-red-600"> {m}</span> :{s}
+  </span>
+
+  {isSpeaking && (
+    <div className="mt-2 flex items-center space-x-2 text-blue-600 bg-gray-300 p-2 rounded-md shadow-md w-fit">
+      <Volume2 size={20} className="animate-pulse" />
+      <span>AI is speaking..</span>
+    </div>
+  )}
+</div>
+
+          <div
+            className="flex items-center gap-2 text-yellow-600"
+            title={`${warnings} out of ${MAX_WARNINGS} warnings used`}
+          >
             <ShieldAlert size={20} />
-            <span className="font-semibold">{warnings}/{MAX_WARNINGS}</span>
+            <span className="font-semibold">
+              {warnings}/{MAX_WARNINGS}
+            </span>
           </div>
         </div>
         <div className="flex flex-col gap-6 w-full items-center mt-20">
-          {isSpeaking && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center space-x-2 text-blue-600">
-              <Volume2 size={24} className="animate-pulse" />
-              <span>AI is speaking...</span>
-            </div>
-          )}
           <video
             ref={userVideoRef}
             autoPlay
@@ -540,7 +587,7 @@ export default function InterviewPanel() {
         </div>
         <button
           onClick={handleLeave}
-          className="flex items-center bg-[#960404] hover:bg-[#b84343] text-white px-3 py-1 rounded-md"
+          className="flex items-center bg-[#bd0e0e] hover:bg-[#b84343] text-white px-3 py-1 rounded-md"
           disabled={isAnalyzing} // Disable button while loading
         >
           {/* <PhoneOff size={15} className="mr-1" /> */}
@@ -548,5 +595,5 @@ export default function InterviewPanel() {
         </button>
       </div>
     </div>
-  );
+    );
 }

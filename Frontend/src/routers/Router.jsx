@@ -16,6 +16,7 @@ import TermsAndConditions from '../components/Termsandconditions'
 import SupportDetail from '../pages/SupportDetail'
 import SupportPage from '../pages/Supportpage';
 import Disqualified from '../components/Disqualified';
+import ContactUS from '../components/custom/ContactUs';
 
 
 
@@ -35,6 +36,7 @@ export default function AppRouter() {
             <Route path='/resume-score-checker' element={<ResumeScoreChecker />} />
             <Route path='/suggestions' element={<GetSuggestionsCard />} />
             <Route path="/resume-optimization-tips" element={<ResumeOptimizationTip />} />
+            <Route path='/contact' element={<ContactUS />} />
             <Route path='/resume-checker' element={<Resumechecker />} />
             <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="/support" element={<SupportPage />} />
