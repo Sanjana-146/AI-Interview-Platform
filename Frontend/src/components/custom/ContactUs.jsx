@@ -179,7 +179,7 @@ const ContactUS = () => {
 
                             <button
                                 type="submit"
-                                className="w-full p-3 rounded-md bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-all flex justify-center"
+                                className="px-6 py-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-all flex justify-center"
                             >
                                 SUBMIT
                             </button>

@@ -203,7 +203,7 @@ useEffect(() => {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold text-white"><span className="text-blue-500">InterviewReady</span>-AI</h2>
+          <h2 className="text-xl font-bold text-white"><span className="text-blue-500">Interview Edge</span>-AI</h2>
           <button
             className="md:hidden text-white hover:text-white"
             onClick={() => setSidebarOpen(false)}

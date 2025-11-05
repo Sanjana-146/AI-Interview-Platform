@@ -1,8 +1,8 @@
 import React from "react";
 import { Briefcase, MessageSquareText, Zap, TrendingUp } from "lucide-react";
-import chooseRole from "../../assets/step4.jpg";
-import interviewQuestion from "../../assets/step1.jpg";
-import feedbackpng from "../../assets/step2.jpg";
+import chooseRole from "../../assets/step1.jpg";
+import interviewQuestion from "../../assets/step2.jpg";
+import feedbackpng from "../../assets/step4.jpg";
 import improve from "../../assets/step3.jpg";
 
 import { useNavigate } from "react-router-dom";

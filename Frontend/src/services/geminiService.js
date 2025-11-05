@@ -14,7 +14,7 @@ const initializeGemini = () => {
 export const analyzeResumeWithGemini = async (resumeText, jobDescription) => {
   try {
     const genAI = initializeGemini();
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
     const prompt = `
 As an expert ATS (Applicant Tracking System) and recruitment specialist, analyze the following resume against the provided job description. Provide a comprehensive analysis with specific scores and actionable feedback.

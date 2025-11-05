@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from "react";
 import homePageImage from "../assets/homePage.png";
 import Navbar from "../components/custom/Navbar";
 import Team from '../pages/Team'
+import { useNavigate } from "react-router-dom";
+
 
 import HowItWork from "../components/custom/HowitWorks";
 import { gsap } from "gsap";
@@ -18,6 +20,7 @@ import ContactUS from "../components/custom/ContactUs";
 
 
 const Home = () => {
+  const navigate = useNavigate();
 
   const appRef = useRef(null);
 
@@ -76,7 +79,7 @@ const Home = () => {
           {/* <button className="mt-8 px-6 py-3 rounded-full font-medium bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg transition-transform transform hover:scale-105">
             Get Started
           </button> */}
-          <button
+          <button onClick={() => navigate('/signup')}
             className="mt-6 px-6 py-3 bg-blue-600 text-white 
                 hover:bg-white hover:text-blue-600
                 border border-blue-600 
@@ -149,8 +152,10 @@ const Home = () => {
 </div>
 
       <Team />
-      <ContactUS/>
       <FAQ />
+      <div className="mt-20"> <ContactUS/> </div>
+      
+
 
      <div className="mt-20"> <Footer/></div>
 

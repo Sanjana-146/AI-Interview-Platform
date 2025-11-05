@@ -304,9 +304,9 @@ import sonamImage from '../assets/sonam-legals.jpg';
 
 const team = [
   { id: 1, name: "Shekhar Barkhade", role: "Frontend Developer", image: shekharImage, color: "bg-[#0D1B2A]" },
-  { id: 2, name: "Sanskar c", role: "Test Engineer", image: sanskarImage, color: "bg-[#0D1B2A]" },
+  { id: 2, name: "Sanskar", role: "Test Engineer", image: sanskarImage, color: "bg-[#0D1B2A]" },
   { id: 3, name: "Sanjana Patel", role: "Backend Developer", image: siyaImage, color: "bg-[#0D1B2A]" },
-  { id: 4, name: "Sakshi  ", role: "UI/UX Designer", image: sakshiImage, color: "bg-[#0D1B2A]" },
+  { id: 4, name: "Sakshi", role: "UI/UX Designer", image: sakshiImage, color: "bg-[#0D1B2A]" },
   { id: 5, name: "Ananya Sharma", role: "Project Manager", image: sonamImage, color: "bg-[#0D1B2A]" },
 ];
 
