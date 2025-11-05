@@ -6,10 +6,10 @@ import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
 function Signin({ onToggle }) {
-  // const { backendUrl, setIsLoggedIn, setUser } = useContext(AppContext)
-  const backendUrl = ""; 
-  const setIsLoggedIn = (status) => console.log(`User logged in status set to: ${status}`);
-  const setUser = (user) => console.log("User context set to:", user);
+  const { backendUrl, setIsLoggedIn, setUser } = useContext(AppContext)
+  // const backendUrl = ""; 
+  // const setIsLoggedIn = (status) => console.log(`User logged in status set to: ${status}`);
+  // const setUser = (user) => console.log("User context set to:", user);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
