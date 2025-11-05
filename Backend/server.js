@@ -30,6 +30,8 @@ app.use(cors({
   credentials: true,
 }));
 
+app.use(cookieParser());
+
 // API Endpoints
 app.get('/' , (req , res)=> res.send("API is working"));
 app.use('/api/auth' , authRouter)
