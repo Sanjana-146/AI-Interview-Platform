@@ -64,7 +64,7 @@ export const AppContextProvider = (props)=>{
       // Clear state on the frontend
       setIsLoggedIn(false);
       setUser(null);
-      // navigate("/");
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }

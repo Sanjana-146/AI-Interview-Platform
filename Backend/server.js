@@ -15,7 +15,7 @@ connectDB();
 
 const allowedOrigins = [
   'http://localhost:5173', // local dev
-  'https://ai-interview-platform-frontend.onrender.com' // deployed frontend
+  // 'https://ai-interview-platform-frontend.onrender.com' // deployed frontend
 ];
 
 app.use(cors({
