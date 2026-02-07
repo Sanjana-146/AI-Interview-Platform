@@ -8,6 +8,7 @@ import userRouter from "./routes/userRoutes.js";
 import interviewRouter from "./routes/interviewroutes.js";
 import feedbackRoutes from './routes/feedbackroutes.js'; 
 import contactRouter from "./routes/contactUs.js";
+import pyqQuestionsRoutes from "./routes/pyqQuestionsRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -42,5 +43,6 @@ app.use('/api/user' , userRouter)
 app.use('/api/interview' , interviewRouter)
 app.use('/api/feedback' , feedbackRoutes)
 app.use('/api' , contactRouter)
+app.use('/api/questions' , pyqQuestionsRoutes)
 
 app.listen(port , ()=> console.log(`Server is running on PORT: ${port}`));

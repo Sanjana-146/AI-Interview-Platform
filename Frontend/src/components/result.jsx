@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import FeedbackForm from './FeedbackForm'
 
 export default function Result() {
   const location = useLocation();

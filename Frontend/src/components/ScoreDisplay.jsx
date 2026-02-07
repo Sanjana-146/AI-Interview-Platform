@@ -53,8 +53,10 @@ const ScoreDisplay = ({ analysis }) => {
             </span>
           </div>
           <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-2xl mx-auto">
-            {analysis.overallScore >= 80 ? 'Excellent match! 🎉' : 
+            {
+            analysis.overallScore >= 80 ? 'Excellent match! 🎉' : 
              analysis.overallScore >= 60 ? 'Good match with room for improvement 👍' : 
+             analysis.overallScore >= 40 ? 'Need More Improvement 👀' :
              'Needs significant improvement 📈'}
           </p>
         </div>
@@ -169,3 +171,5 @@ const ScoreDisplay = ({ analysis }) => {
 };
 
 export default ScoreDisplay;
+
+

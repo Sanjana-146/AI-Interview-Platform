@@ -17,7 +17,9 @@ import SupportDetail from '../pages/SupportDetail'
 import SupportPage from '../pages/Supportpage';
 import Disqualified from '../components/Disqualified';
 import ContactUS from '../components/custom/ContactUs';
-
+import FeedbackForm from '../components/FeedbackForm';
+import AdminAuth from '../components/AdminPanel/AdminAuth';
+import PreviousQuestions from '../pages/PreviousQuestions';
 
 
 export default function AppRouter() {
@@ -42,6 +44,9 @@ export default function AppRouter() {
             <Route path="/support" element={<SupportPage />} />
             <Route path="/support/:category" element={<SupportDetail />} />
             <Route path="/disqualified" element={<Disqualified />} />
+            <Route path="/feedback" element={<FeedbackForm />} />
+            <Route path="/admin" element={<AdminAuth/>} />
+            <Route path="/previous-questions" element={<PreviousQuestions />} />
         </Routes>
     );
 }
